@@ -72,11 +72,7 @@ def image_formation(scene, psf_list, args):
 
     noise_level = args.noise_min + (args.noise_max - args.noise_min) * torch.rand(1)
 
-    if args.use_RGB:
-        measurement = torch.stack([torch.nn.functional.conv2d(input=measurement[:,i::num_meas,:,:], weight=args.qe) for i in range(num_meas)])
-    else:
-        measurement = torch.stack([torch.nn.functional.conv2d(input=measurement[:,i::num_meas,:,:], weight=args.qe) for i in range(num_meas)]) 
-        
+    measurement = torch.stack([torch.nn.functional.conv2d(input=measurement[:,i::num_meas,:,:], weight=args.qe) for i in range(num_meas)])
 
     measurement += torch.randn_like(measurement)*noise_level.to(args.device)
     
