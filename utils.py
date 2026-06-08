@@ -20,11 +20,6 @@ class Loss(torch.nn.Module):
         self.w_sam = args.loss_fn['w_sam']
 
     def forward(self, output, gt):
-        # Compare the pixel loss ans spectral loss between the HS cube
-        # if self.spec_loss is not None:
-        #     return self.w_px * self.px_loss(output, gt) + self.w_sam * self.spec_loss(output, gt)
-        # else:
-        #     return self.w_px * self.px_loss(output, gt)
         
         # Compare the RGB image using the perceptual loss + SAM loss
         out_spectral = torch.nn.functional.conv2d(input=output, weight=self.QE_weight)
@@ -81,10 +76,7 @@ def image_formation(scene, psf_list, args):
         measurement = torch.stack([torch.nn.functional.conv2d(input=measurement[:,i::num_meas,:,:], weight=args.qe) for i in range(num_meas)])
     else:
         measurement = torch.stack([torch.nn.functional.conv2d(input=measurement[:,i::num_meas,:,:], weight=args.qe) for i in range(num_meas)]) 
-    # pdb.set_trace()
-    # measurement += torch.randn_like(measurement)*noise_level.to(args.device)
-    # measurement = torch.stack([torch.sum(measurement[:,i::num_meas,:,:],dim=1) for i in range(num_meas)],dim=1) 
-    # pdb.set_trace()
+        
 
     measurement += torch.randn_like(measurement)*noise_level.to(args.device)
     
